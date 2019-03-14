@@ -37,7 +37,41 @@
   (find-file-other-window buffer-file-name)
   (ff-find-other-file)
   ;;(other-window -1)
-) 
+)
+
+(defun insert-line-below ()
+  "Insert an empty line below the current line."
+  (interactive)
+  (save-excursion
+    (end-of-line)
+    (open-line 1)))
+
+(defun insert-line-above ()
+  "Insert an empty line above the current line."
+  (interactive)
+  (save-excursion
+    (end-of-line 0)
+    (open-line 1)))
+
+(defun duplicate-line-downwards()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (insert-line-below)
+  (next-line 1)
+  (yank)
+)
+
+(defun duplicate-line-upwards()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (insert-line-above)
+  (previous-line 1)
+  (yank)
+)
 
 ;; sagara-settings
 
@@ -122,19 +156,7 @@
 (global-set-key (kbd "C-M-.") 'next-blank-line)
 (global-set-key (kbd "C-M-o") 'other-window)
 (global-set-key (kbd "C-M-S-o") 'find-other-file-in-other-window)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (dracula)))
- '(custom-safe-themes
-   (quote
-    ("aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" default))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(global-set-key (kbd "M-9") 'kmacro-start-macro)
+(global-set-key (kbd "M-0") 'kmacro-end-macro)
+(global-set-key (kbd "M-]") 'duplicate-line-downwards)
+(global-set-key (kbd "M-[") 'duplicate-line-upwards)
