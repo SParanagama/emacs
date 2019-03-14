@@ -82,6 +82,12 @@
     (kill-ring-save (line-beginning-position) (line-end-position)))
 )
 
+(defun cut-line ()
+  (interactive)
+  (save-excursion
+    (kill-region (line-beginning-position) (line-end-position)))
+)
+
 (defun c-go-to-next-defun ()
   (interactive)
   (call-interactively 'c-end-of-defun)
@@ -179,4 +185,4 @@ fixme-modes)
 (define-key c-mode-base-map (kbd "M-]") 'duplicate-line-downwards)
 (define-key c-mode-base-map (kbd "M-[") 'duplicate-line-upwards)
 (define-key c-mode-base-map (kbd "C-S-c") 'copy-line)
-
+(define-key c-mode-base-map (kbd "C-S-x") 'cut-line)
