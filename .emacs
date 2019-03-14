@@ -10,6 +10,9 @@
     (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
 
+;; sagara-requires
+(require 'cc-mode)
+
 ;; sagara-functions
 
 (defun previous-blank-line ()
@@ -73,6 +76,19 @@
   (yank)
 )
 
+(defun copy-line ()
+  (interactive)
+  (save-excursion
+    (kill-ring-save (line-beginning-position) (line-end-position)))
+)
+
+(defun c-go-to-next-defun ()
+  (interactive)
+  (call-interactively 'c-end-of-defun)
+  (call-interactively 'c-end-of-defun)
+  (call-interactively 'c-beginning-of-defun)
+)
+
 ;; sagara-settings
 
 ; Determine the underlying operating system
@@ -89,13 +105,13 @@
 
 ;; sagara-c-cpp-settings
 
-(setq cc-search-directories '("."
-                              "../inc" "../inc/*" "../../inc/*" "../../../inc/*"
-                              "../../inc/*/*" "../../../inc/*/*/*"
-                              "../src" "../src/*" "../../src/*" "../../../src/*"
-                              "../../src/*/*" "../../../src/*/*/*"
-                              "/usr/include" "/usr/local/include/*"))
-
+(setq cc-search-directories '(
+  "."
+  "../inc" "../inc/*" "../../inc/*" "../../../inc/*"
+  "../../inc/*/*" "../../../inc/*/*/*"
+  "../src" "../src/*" "../../src/*" "../../../src/*"
+  "../../src/*/*" "../../../src/*/*/*"
+  "/usr/include" "/usr/local/include/*"))
 
 ;; sagara-editor-appearance-settings
 
@@ -125,38 +141,42 @@
 (menu-bar-mode -1)
 
 ;; bright-red TODOs
- (setq fixme-modes '(c++-mode c-mode emacs-lisp-mode))
- (make-face 'font-lock-fixme-face)
- (make-face 'font-lock-study-face)
- (make-face 'font-lock-important-face)
- (make-face 'font-lock-note-face)
- (mapc (lambda (mode)
-	 (font-lock-add-keywords
-	  mode
-	  '(("\\<\\(TODO\\)" 1 'font-lock-fixme-face t)
-	    ("\\<\\(STUDY\\)" 1 'font-lock-study-face t)
-	    ("\\<\\(IMPORTANT\\)" 1 'font-lock-important-face t)
-            ("\\<\\(NOTE\\)" 1 'font-lock-note-face t))))
-	fixme-modes)
- (modify-face 'font-lock-fixme-face "Red" nil nil t nil t nil nil)
- (modify-face 'font-lock-study-face "Yellow" nil nil t nil t nil nil)
- (modify-face 'font-lock-important-face "Yellow" nil nil t nil t nil nil)
- (modify-face 'font-lock-note-face "Dark Green" nil nil t nil t nil nil)
+(setq fixme-modes '(c++-mode c-mode emacs-lisp-mode))
+(make-face 'font-lock-fixme-face)
+(make-face 'font-lock-study-face)
+(make-face 'font-lock-important-face)
+(make-face 'font-lock-note-face)
+(mapc (lambda (mode)
+ (font-lock-add-keywords
+  mode
+  '(("\\<\\(TODO\\)" 1 'font-lock-fixme-face t)
+    ("\\<\\(STUDY\\)" 1 'font-lock-study-face t)
+    ("\\<\\(IMPORTANT\\)" 1 'font-lock-important-face t)
+        ("\\<\\(NOTE\\)" 1 'font-lock-note-face t))))
+fixme-modes)
+(modify-face 'font-lock-fixme-face "Red" nil nil t nil t nil nil)
+(modify-face 'font-lock-study-face "Yellow" nil nil t nil t nil nil)
+(modify-face 'font-lock-important-face "Yellow" nil nil t nil t nil nil)
+(modify-face 'font-lock-note-face "Dark Green" nil nil t nil t nil nil)
 
 ;; sagara-key-bindings
-(global-set-key (kbd "C-M-k") 'next-line)
-(global-set-key (kbd "C-M-i") 'previous-line)
-(global-set-key (kbd "C-M-j") 'backward-char)
-(global-set-key (kbd "C-M-l") 'forward-char)
-(global-set-key (kbd "C-M-S-k") 'c-end-of-defun)
-(global-set-key (kbd "C-M-S-i") 'c-beginning-of-defun)
-(global-set-key (kbd "C-M-S-j") 'backward-word)
-(global-set-key (kbd "C-M-S-l") 'forward-word)
-(global-set-key (kbd "C-M-,") 'previous-blank-line)
-(global-set-key (kbd "C-M-.") 'next-blank-line)
+
 (global-set-key (kbd "C-M-o") 'other-window)
-(global-set-key (kbd "C-M-S-o") 'find-other-file-in-other-window)
-(global-set-key (kbd "M-9") 'kmacro-start-macro)
-(global-set-key (kbd "M-0") 'kmacro-end-macro)
-(global-set-key (kbd "M-]") 'duplicate-line-downwards)
-(global-set-key (kbd "M-[") 'duplicate-line-upwards)
+
+(define-key c-mode-base-map (kbd "C-M-k") 'next-line)
+(define-key c-mode-base-map (kbd "C-M-i") 'previous-line)
+(define-key c-mode-base-map (kbd "C-M-j") 'backward-char)
+(define-key c-mode-base-map (kbd "C-M-l") 'forward-char)
+(define-key c-mode-base-map (kbd "C-M-S-k") 'c-go-to-next-defun)
+(define-key c-mode-base-map (kbd "C-M-S-i") 'c-beginning-of-defun)
+(define-key c-mode-base-map (kbd "C-M-S-j") 'backward-word)
+(define-key c-mode-base-map (kbd "C-M-S-l") 'forward-word)
+(define-key c-mode-base-map (kbd "C-M-,") 'previous-blank-line)
+(define-key c-mode-base-map (kbd "C-M-.") 'next-blank-line)
+(define-key c-mode-base-map (kbd "C-M-S-o") 'find-other-file-in-other-window)
+(define-key c-mode-base-map (kbd "M-9") 'kmacro-start-macro)
+(define-key c-mode-base-map (kbd "M-0") 'kmacro-end-macro)
+(define-key c-mode-base-map (kbd "M-]") 'duplicate-line-downwards)
+(define-key c-mode-base-map (kbd "M-[") 'duplicate-line-upwards)
+(define-key c-mode-base-map (kbd "C-S-c") 'copy-line)
+
